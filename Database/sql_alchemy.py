@@ -179,6 +179,17 @@ def add_student_submission():
 def add_student_page():
     return render_template('add_student.html')
 
+@app.route('/ta_direct_submit_page')
+def ta_direct_submit_page():
+    return render_template('ta_direct_submit.html')
+
+@app.route('/ta_direct_submit_page/submit',methods=['POST'])
+def ta_direct_submit():
+    data = request.form
+    app.logger.debug(f"Received form data: {data}")
+
+    
+
 # ===== RUN THE APP =====
 if __name__ == '__main__':
     app.run(debug=True)

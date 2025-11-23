@@ -1,0 +1,40 @@
+#!/bin/bash
+
+echo "Enter you roll number to submit"
+echo ""
+
+read -p "Roll Number:  " roll
+read -p "Course Code:  " course_code
+read -p "Subject:  " subject
+read -p "TestNo:  " test_no
+
+host_parts=$(hostname | sed 's/-/ /')
+read lab seat_number <<< "$host_parts"
+
+echo "Lab Variable: $lab"
+echo "Seat Number Variable: $seat_number"
+
+
+SESSION=$USER
+
+
+DIR="/home/$SESSION/Desktop/submission_${roll}"
+FILENAME="/home/$SESSION/Desktop/${HOSTNAME}_submission_$roll.tar.gz"
+
+#echo $FILENAME
+if [ -f "$FILENAME" ]
+then
+    echo "Files that will be submitted are:"
+    echo "Files                    |  Size (bytes) | Timestamp"
+    cat /home/$SESSION/find_results.txt 
+    scp -o StrictHostKeyChecking=no $FILENAME cs683@10.129.3.151:/home/submission/lab_submissions/
+    if [ $? -eq 0 ]
+    then
+      echo "successfully submitted !!"
+      curl -d "StudentID=$roll&CourseCode=$course_code&Lab=$lab&Subject=$subject&TestNo=$test_no&SeatNo=$seat_number&Submitted=True" -X POST http://localhost:5000/student/submit
+    else
+      echo "please retry submissioni!!"
+    fi
+else
+  echo "Please run check first!!"
+fi
