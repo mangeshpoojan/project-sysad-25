@@ -1,0 +1,2 @@
+curl -d "StudentID=25m0834&CourseCode=cs699&Lab=1&Subject=software_lab&TestNo=1&SeatNo=4&Submitted=True" -X POST http://localhost:5000/student/submit
+curl -d "StudentID=25m0835&CourseCode=cs699&Lab=1&Subject=software_lab&TestNo=1&SeatNo=5&Submitted=False" -X POST http://localhost:5000/student/submit

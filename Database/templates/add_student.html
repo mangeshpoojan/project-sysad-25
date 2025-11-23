@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+</head>
+<body>
+    <h1>Add Student</h1>
+    <form action="/add_student/submit" method="POST">
+        <label for="StudentID">Student ID:
+            <input type="text" name="StudentID" required>
+        </label>
+        <br>
+        <label for="CourseCode">Course Code:
+            <input type="text" name="CourseCode" required>
+        </label>
+        <br>
+        <label for="Subject">Subject:
+            <input type="text" name="Subject" required>
+        </label>
+        <br>
+        <label for="TestNo">Test No:
+            <input type="number" name="TestNo" required>
+        </label>
+        <br>
+        <label for="SeatNo">Seat No:
+            <input type="text" name="SeatNo" >
+        </label>
+        <br>
+        <label for="Lab">Lab:
+            <input type="text" name="Lab">
+        </label>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
