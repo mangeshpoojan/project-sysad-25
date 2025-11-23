@@ -1,12 +1,11 @@
-#!/bin/bash
 
-echo "Enter you roll number to submit"
-echo ""
 
-read -p "Roll Number:  " roll
-read -p "Course Code:  " course_code
-read -p "Subject:  " subject
-read -p "TestNo:  " test_no
+SOURCE_DIR = "/home/$SESSION/Desktop"
+cd ${SOURCE_DIR}
+
+rollno=$(ls | grep "_submission_" | sed -n 's/^.*\([0-9]\{2\}[a-zA-Z][0-9]\{4\}\).*$/\1/p')
+
+echo $rollno
 
 host_parts=$(hostname | sed 's/-/ /')
 read lab seat_number <<< "$host_parts"
@@ -14,14 +13,6 @@ read lab seat_number <<< "$host_parts"
 echo "Lab Variable: $lab"
 echo "Seat Number Variable: $seat_number"
 
-  
-SESSION=$USER
-
-
-DIR="/home/$SESSION/Desktop/submission_${roll}"
-FILENAME="/home/$SESSION/Desktop/${HOSTNAME}_submission_$roll.tar.gz"
-
-#echo $FILENAME
 if [ -f "$FILENAME" ]
 then
     echo "Files that will be submitted are:"
@@ -31,7 +22,7 @@ then
     if [ $? -eq 0 ]
     then
       echo "successfully submitted !!"
-      curl -d "StudentID=$roll&CourseCode=$course_code&Lab=$lab&Subject=$subject&TestNo=$test_no&SeatNo=$seat_number&Submitted=True" -X POST http://localhost:5000/student/submit
+      curl -d "StudentID=$rollno&CourseCode=$course_code&Lab=$lab&Subject=$subject&TestNo=$test_no&SeatNo=$seat_number&Submitted=True" -X POST http://localhost:5000/student/submit
     else
       echo "please retry submissioni!!"
     fi

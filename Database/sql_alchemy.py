@@ -188,7 +188,19 @@ def ta_direct_submit():
     data = request.form
     app.logger.debug(f"Received form data: {data}")
 
+    with open("bash_scripts/better_submit.sh", "r") as file:
+        lines = file.readlines()
     
+    with open("bash_scripts/sending_submit.sh", "w") as file:
+        file.write("#!/bin/bash\n")
+        file.write("SESSION=sysad\n")
+        file.write("COURSE_CODE=" + data['CourseCode'] + "\n")
+        file.write("TEST_NO=" + data['TestNo'] + "\n")
+        # file.write("SUBJECT=" + data['Subject'] + "\n") #already in db
+        for line in lines:
+            file.write(line)
+
+    return "TA Direct Submission Script Updated and Ready to Use", 200
 
 # ===== RUN THE APP =====
 if __name__ == '__main__':
