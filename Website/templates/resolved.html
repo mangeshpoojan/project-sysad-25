@@ -10,6 +10,7 @@
 
     {% include 'home_button.html' %}
     <div class="filters">
+        <a href="{{url_for('feedback')}}">Feedback</a>
         <a href="{{url_for('previous')}}">All Records</a>
         <a href="{{url_for('resolved')}}">Resolved</a>
         <a href="{{url_for('unresolved')}}">Unresolved</a>

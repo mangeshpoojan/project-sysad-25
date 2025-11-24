@@ -9,7 +9,9 @@
 <body>
 
     {% include 'home_button.html' %}
-
+     <div class="submit">
+        <a href="{{url_for('previous')}}"><button type="submit">previous Submit Report</button></a>
+    </div>
 
 
     <form method="POST" action="{{ url_for('submit') }}">
@@ -83,9 +85,7 @@
             </div>
         </div>
     </form>
-    <div class="submit">
-        <a href="{{url_for('previous')}}"><button type="submit">previous Submit Report</button></a>
-    </div>
+   
 </body>
 
 </html>

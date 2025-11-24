@@ -1,157 +1,138 @@
+/* --- General Page Setup --- */
 body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #f4f4f9; 
-    width: 80vw;
-    margin: 0 auto; 
-    padding: 20px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5; 
+    margin: 0;
+    padding: 0; /* Removed padding here to let header sit at top */
+    color: #333;
 }
 
+/* --- The Main Form Container --- */
 form {
     background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    max-width: 900px; 
-    width: 100%; 
-    min-width: 300px; 
-    margin: 0 auto;
+    /* ALIGNMENT FIX: Match the header's width and centering */
+    width: 80vw;             
+    max-width: none;         /* Removed the 700px limit */
+    margin: 20px auto;       /* 0 auto centers it. 20px adds space between header and form */
+    
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;  /* Ensures padding doesn't expand the width */
 }
 
+/* --- Headings --- */
 h3 {
-    color: #1e40af; 
-    border-bottom: 2px solid #e0e7ff;
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
     padding-bottom: 10px;
-    margin-top: 20px;
-    margin-bottom: 15px;
+    margin-top: 30px;
+    font-size: 18px;
 }
 
-.lab_section, .computer_number_section {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
+/* --- Labels and Inputs --- */
 label {
-    display: block;
+    font-weight: bold;
     margin-bottom: 8px;
-    font-weight: 600;
-    color: #374151;
+    display: block;
+    color: #555;
 }
 
-input[type="text"], input[type="number"], textarea {
+.lab_section, .computer_number_section, .detail_section {
+    margin-bottom: 20px;
+}
+
+/* Styling for Text boxes and Textareas */
+input[type="text"], 
+input[type="number"], 
+textarea {
     width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    box-sizing: border-box; 
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; 
+    background-color: #fafafa; /* Slight contrast for inputs */
 }
 
-input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
-    border-color: #3b82f6; 
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+input:focus, textarea:focus {
+    border-color: #007bff;
+    background-color: #fff;
     outline: none;
 }
 
-.issue_group {
-    padding: 10px 0;
-}
-
+/* --- Radio Button Grid --- */
 #issue_options {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px; 
+    gap: 15px;
 }
 
 .radio-option {
-    width: 48%; 
-    flex: 0 0 auto;
+    /* Since the form is wider now, we use min-width to keep 
+       them from getting too stretched or too squished. 
+       30% ensures roughly 3 per row on wide screens.
+    */
+    flex: 1 1 30%; 
+    min-width: 200px; /* Prevents them from getting too small on mobile */
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 8px 10px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .radio-option:hover {
-    background-color: #f3f4f6;
+    background-color: #e2e6ea;
+    border-color: #bbb;
 }
 
 .radio-option input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #9ca3af;
-    border-radius: 50%;
-    margin-right: 10px;
-    display: grid;
-    place-content: center;
-    transition: all 0.2s;
-}
-
-.radio-option input[type="radio"]::before {
-    content: "";
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    transform: scale(0);
-    transition: transform 0.2s;
-    background-color: #1e40af; 
-}
-
-.radio-option input[type="radio"]:checked {
-    border-color: #1e40af;
-}
-
-.radio-option input[type="radio"]:checked::before {
-    transform: scale(1);
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #007bff; /* Makes the dot blue to match theme */
 }
 
 .radio-option label {
-    font-weight: normal;
     margin-bottom: 0;
     cursor: pointer;
+    font-weight: normal;
 }
 
-.detail_section {
-    margin-top: 25px;
-}
-
-.detail_section textarea {
-    min-height: 120px;
-    resize: vertical; 
-}
-
+/* --- Buttons --- */
 .submit {
-    margin-top: 30px;
     text-align: center;
+    margin-top: 30px;
 }
 
-.submit button[type="submit"] {
-    width: 100%;
-    max-width: 300px;
-    padding: 12px 20px;
+button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    padding: 14px 40px; /* Slightly larger button */
     font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
-    background-color: #1e40af; 
+    font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
-    transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+    width: 100%;
+    max-width: 400px; /* Keeps button from getting absurdly wide */
+    transition: background-color 0.2s;
 }
 
-.submit button[type="submit"]:hover {
-    background-color: #1c52b5;
-    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.5);
+button[type="submit"]:hover {
+    background-color: #0056b3;
 }
 
-.submit button[type="submit"]:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(30, 64, 175, 0.4);
+/* Previous Button Container */
+a .button-secondary {
+    background-color: #6c757d;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    width: auto;
 }
