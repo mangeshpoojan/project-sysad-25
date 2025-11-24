@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>home</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/home.css')}}">
+
+</head>
+
+<body>
+    <h1>Lab Operations Hub</h1>
+    <h3>Select a function to manage the lab computers.</h3>
+    <div id="services">
+        <div class="service_container">
+            <a href="{{url_for('internet_enable')}}">
+                <div class="service_icon">
+                    <img src="{{ url_for('static', filename='images/internet_enable.png') }}" alt="Internet Enable Icon">
+                </div>
+                <div class="service_detail">
+                    <h2>Internet Enable</h2>
+                    <h4>Activate network access for all lab PCs.</h4>
+                </div>
+            </a>
+        </div>
+
+        <div class="service_container">
+            <a href="{{url_for('internet_disable')}}">
+                <div class="service_icon">
+                    <img src="{{ url_for('static', filename='images/internet_disable.png') }}" alt="Internet Disable Icon">
+                </div>
+                <div class="service_detail">
+                    <h2>Internet Disable</h2>
+                    <h4>Deactivate network access for all lab PCs.</h4>
+                </div>
+            </a>
+        </div>
+
+        <div class="service_container">
+            <a href="{{url_for('free_space')}}">
+                <div class="service_icon">
+                    <img src="{{ url_for('static', filename='images/free_space.png') }}" alt="Check Free Space Icon">
+                </div>
+                <div class="service_detail">
+                    <h2>Check Free Space</h2>
+                    <h4>View storage availability on lab computers.</h4>
+                </div>
+            </a>
+        </div>
+
+        <div class="service_container">
+            <a href="{{url_for('check_submit')}}">
+                <div class="service_icon">
+                    <img src="{{ url_for('static', filename='images/submit.png') }}" alt="Exam Submission Icon">
+                </div>
+                <div class="service_detail">
+                    <h2>Exam Submission</h2>
+                    <h4>Monitor and manage student exam files.</h4>
+                </div>
+            </a>
+        </div>
+
+        <div class="service_container">
+            <a href="{{url_for('feedback')}}">
+                <div class="service_icon">
+                    <img src="{{ url_for('static', filename='images/feedback.png') }}" alt="Feedback Form Icon">
+                </div>
+                <div class="service_detail">
+                    <h2>Feedback Form</h2>
+                    <h4>Access the computer issue reporting form.</h4>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

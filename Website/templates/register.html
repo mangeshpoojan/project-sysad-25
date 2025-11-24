@@ -5,19 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple User Login</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='css/login.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/register.css')}}">
 
 </head>
 
 <body>
     <div class="header">
-        <a href="{{url_for('register')}}">REGISTER</a>
+        <a href="{{url_for('login')}}">LOGIN</a>
     </div>
     <div class="login-container">
-        <h1>Log In</h1>
+        <h1>Register</h1>
         <!-- The Login Form -->
-        <form method="POST">
-            <!-- email Input -->
+        <form  method="POST">
+            <!-- Username Input -->
             <div>
                 <label for="username">User name</label>
                 <input type="text" id="username" name="username" placeholder="Enter Username" required>
@@ -27,6 +27,11 @@
             <div>
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter password" required>
+            </div>
+
+             <div>
+                <label for="paraphrase">SYSAD Paraphrase</label>
+                <input type="password" id="paraphrase" name="paraphrase" placeholder="Enter Paraphrase" required>
             </div>
 
             <!-- Submit Button -->

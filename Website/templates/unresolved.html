@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>feedback form</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/previous_feedback.css')}}">
+</head>
+
+<body>
+
+    {% include 'home_button.html' %}
+    <div class="filters">
+        <a href="{{url_for('previous')}}">All Records</a>
+        <a href="{{url_for('resolved')}}">Resolved</a>
+        <a href="{{url_for('unresolved')}}">Unresolved</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <td>Lab</td>
+                <td>Computer Number</td>
+                <td>Issue</td>
+                <td>Issue Detail</td>
+                <td>Progres</td>
+                <td>button</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in data %}
+            <tr class="red">
+            <td>{{record['lab']}}</td>
+            <td>{{record['computer_number']}}</td>
+            <td>{{record['issue']}}</td>
+            <td>{{record['issue_details']}}</td>
+            <td>{{record['progress']}}</td>
+            {% if record['progress']=='unresolved' %}
+            <td><a href="{{url_for('update_resolve',id=record['id'])}}">Mark Resolved</a></td>
+            {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+
+</body>
+
+</html>

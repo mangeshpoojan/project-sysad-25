@@ -1,0 +1,74 @@
+/* --- Global Body & Layout (Centered 80vw) --- */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    /* REMOVED PADDING/JUSTIFY: Centering is now handled by the wrapper/table margin */
+    margin: 0; 
+    padding: 0;
+}
+
+/* --- Basic Table Styling for free_space.html --- */
+table {
+    border-collapse: collapse;
+    
+    /* CENTERING & WIDTH: Set width and use auto margins */
+    width: 80vw;
+    margin: 20px auto; /* Centers the table horizontally and adds top/bottom margin */
+    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden; 
+}
+
+/* Header Styling */
+thead tr {
+    background-color: #3f51b5; /* Primary Blue */
+    color: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* Alternating Row Color for readability */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Hover Effect */
+tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* --- Dynamic Class Styles based on row[2] Available Space --- */
+
+/* Less than or equal to 10 */
+.red {
+    background-color: #ffdddd !important; 
+    color: #cc0000; 
+    font-weight: bold;
+}
+
+/* Less than or equal to 20 */
+.orange {
+    background-color: #fff8e1 !important; 
+    color: #ff8f00; 
+}
+
+/* Greater than 20 */
+.green {
+    background-color: #e8f5e9 !important; 
+    color: #43a047; 
+}
+
+/* Ensure the dynamic class colors override the alternating row color */
+.red, .orange, .green {
+    /* Note: 'background-color: inherit;' in the previous version was incorrect 
+       for overriding. Keeping the colors defined above with !important is better. 
+       This rule has been removed as it conflicted with the colors above.
+    */
+}

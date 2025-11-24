@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>feedback form</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/feedback.css')}}">
+</head>
+
+<body>
+
+    {% include 'home_button.html' %}
+
+
+
+    <form method="POST" action="{{ url_for('submit') }}">
+
+        <div class="lab_section">
+            <label for="lab_name">Enter Lab Name:</label>
+            <input type="text" name="lab" id="lab_name" placeholder="enter lab name" list="lab-options">
+
+            <datalist id="lab-options">
+                <option value="sl-1">
+                <option value="sl-2">
+                <option value="sl-3">
+            </datalist>
+        </div>
+
+        <div class="computer_number_section">
+            <label for="computer_number">Enter PC Number:</label>
+            <input type="number" name="computer_number" id="computer_number" placeholder="enter pc number">
+        </div>
+
+
+        <div class="issue_group">
+            <h3>What is the issue? (Select one)</h3>
+            <div id="issue_options">
+                <div class="radio-option">
+                    <input type="radio" id="mouse" name="issue" value="Mouse Issue">
+                    <label for="mouse">Mouse Issue</label>
+                </div>
+
+                <div class="radio-option">
+                    <input type="radio" id="keyboard" name="issue" value="Keyboard Issue">
+                    <label for="keyboard">Keyboard Issue</label>
+                </div>
+
+                <div class="radio-option">
+                    <input type="radio" id="display" name="issue" value="Display Issue">
+                    <label for="display">Display Issue</label>
+                </div>
+
+                <div class="radio-option">
+                    <input type="radio" id="internet" name="issue" value="Internet Issue">
+                    <label for="internet">Internet Issue</label>
+                </div>
+
+                <div class="radio-option">
+                    <input type="radio" id="software" name="issue" value="Software Not Working">
+                    <label for="software">Software issue</label>
+                </div>
+
+
+                <div class="radio-option">
+                    <input type="radio" id="login" name="issue" value="Login Issue">
+                    <label for="login">Login Issue</label>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="detail_section">
+            <label for="details">Please describe the issue in detail (Maximum 1000 characters):</label><br>
+            <textarea id="details" name="issue_details" rows="5" cols="50" maxlength="1000"
+                placeholder="Enter your description here..."></textarea>
+        </div>
+
+        <br>
+
+        <div>
+            <div class="submit">
+                <button type="submit">Submit Report</button>
+            </div>
+        </div>
+    </form>
+    <div class="submit">
+        <a href="{{url_for('previous')}}"><button type="submit">previous Submit Report</button></a>
+    </div>
+</body>
+
+</html>

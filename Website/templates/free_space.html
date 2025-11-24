@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>free space</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/free_space.css')}}">
+
+</head>
+
+<body>
+    {% include 'home_button.html' %}
+    <table>
+        <thead>
+            <tr>
+                <td>Lab</td>
+                <td>Computer Number</td>
+                <td>total space</td>
+                <td>Used Space</td>
+                <td>Available Space</td>
+                <td>% Used </td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in free_space %}
+            <tr class="{% if row[4]<=10 %}
+                            red
+                        {% elif row[4]<=20 %} 
+                            orange
+                        {% else %}
+                            green
+                        {% endif %}"    >
+                
+                <td>
+                    {{row[0]}}
+                </td>
+                <td>
+                    {{row[1]}}
+                </td>
+                <td>
+                    {{row[2]}}
+                </td>
+                <td>
+                    {{row[3]}}
+                </td>
+                <td>
+                    {{row[4]}}
+                </td>
+                <td>
+                    {{row[5]}}
+                </td>
+               
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>
