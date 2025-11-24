@@ -1,6 +1,6 @@
 #imports
 import os
-from flask import Flask, request
+from flask import Flask, request ,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask import render_template
@@ -51,9 +51,11 @@ class SubmissionSchema(ma.SQLAlchemyAutoSchema):
 with app.app_context():
     if submission.query.count() == 0:
         submission_Sl_lab_1 = [
-            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0828', SeatNo='1', Lab='sl1' ,Submitted=True),
-            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0829', SeatNo='2', Lab='sl1' ,Submitted=True),
+            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0828', SeatNo='1', Lab='sl1' ,Submitted=False),
+            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0829', SeatNo='2', Lab='sl1' ,Submitted=False),
             submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0830', SeatNo='3', Lab='sl1' ,Submitted=False),
+            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0831', SeatNo='4', Lab='sl1' ,Submitted=False),
+
         ]
         db.session.add_all(submission_Sl_lab_1)
         db.session.commit()
@@ -190,12 +192,12 @@ def ta_direct_submit():
     app.logger.debug(f"Received form data: {data}")
 
     submissions_list = submission.query.filter_by(TestNo=data.get('TestNo'), CourseCode=data.get('CourseCode')).all()
-    submissions_list = multi_submission_schema.dump(submissions_list)
-    app.logger.debug(f"Query result: {submissions_list}")
+    submissions_list_dumped = multi_submission_schema.dump(submissions_list)
+    app.logger.debug(f"Query result: {submissions_list_dumped}")
 
     results = []
 
-    for student in submissions_list:
+    for student in submissions_list_dumped:
         app.logger.debug(f"echo 'Submitting for StudentID: {student}'\n")
 
         with open("bash_scripts/better_submit.sh", "r") as file:
@@ -235,16 +237,34 @@ def ta_direct_submit():
 
         with open("bash_scripts/file_sending_script.sh", "w") as file:
             file.write("#!/bin/bash\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
 
         result = subprocess.run(['/home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/file_sending_script.sh'], check=True, capture_output=True, text=True)
 
+        
+
+        if "successfully submitted" in result.stdout:
+            app.logger.info(f"Submission successful for StudentID: {student['StudentID']}")
+            #update db
+            existing_data = submission.query.filter_by(StudentID=student['StudentID'], CourseCode=data.get('CourseCode'), TestNo=data.get('TestNo')).first()
+            if existing_data:
+                existing_data.Submitted = True
+                existing_data.TimeStamp = datetime.now(ZoneInfo('Asia/Kolkata'))
+                db.session.commit()
+                app.logger.debug(f"Database updated for StudentID: {student['StudentID']}")
+        else:
+            app.logger.debug(f"unsuccessful{student}")
+            app.logger.debug(f"{type(result.stdout)}---{result.stdout.find("successfully submitted")}")
+
+ 
         results.append(result.stdout)
         app.logger.debug(f"Submission script sent to {student_ip} for StudentID: {student['StudentID']}")
-        app.logger.debug(f"Submission script output: {result.stdout}")
+        app.logger.debug(f"Submission script output: {result.stdout} ")
 
+    return redirect(url_for('webpage_submissions'))
+ 
     return f"TA Direct Submission Script Updated and Ready to Use {results}", 200
 
 # ===== RUN THE APP =====

@@ -1,10 +1,10 @@
 #!/bin/bash
-DIR="/home/sysad/Desktop/submission_25m0829"
+DIR="/home/sysad/Desktop/submission_25m0831"
 SESSION=sysad
 COURSE_CODE=cs699
 TEST_NO=1
-ROLLNO=25m0829
-FILENAME=/home/sysad/Desktop/sl1-2_submission_25m0829.tar.gz
+ROLLNO=25m0831
+FILENAME=/home/sysad/Desktop/sl1-4_submission_25m0831.tar.gz
 
 if [ -d "$DIR" ]; then
         if [ "$(ls -A $DIR)" ]; then
