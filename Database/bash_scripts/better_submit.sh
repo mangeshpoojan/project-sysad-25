@@ -1,5 +1,3 @@
-
-
 SOURCE_DIR = "/home/$SESSION/Desktop"
 cd ${SOURCE_DIR}
 
@@ -17,12 +15,12 @@ if [ -f "$FILENAME" ]
 then
     echo "Files that will be submitted are:"
     echo "Files                    |  Size (bytes) | Timestamp"
-    cat /home/$SESSION/find_results.txt 
-    scp -o StrictHostKeyChecking=no $FILENAME cs683@10.129.3.151:/home/submission/lab_submissions/
+    cat /home/sysad/find_results.txt 
+    sshpass -p "sahilunagar" scp -o StrictHostKeyChecking=no $FILENAME cs683@10.9.100.47:/home/cs683/submissions
     if [ $? -eq 0 ]
     then
       echo "successfully submitted !!"
-      curl -d "StudentID=$rollno&CourseCode=$course_code&Lab=$lab&Subject=$subject&TestNo=$test_no&SeatNo=$seat_number&Submitted=True" -X POST http://localhost:5000/student/submit
+      # curl -d "StudentID=$rollno&CourseCode=$course_code&Lab=$lab&Subject=$subject&TestNo=$test_no&SeatNo=$seat_number&Submitted=True" -X POST http://localhost:5000/student/submit
     else
       echo "please retry submissioni!!"
     fi

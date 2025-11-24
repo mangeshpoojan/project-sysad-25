@@ -6,6 +6,7 @@ from flask_marshmallow import Marshmallow
 from flask import render_template
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import subprocess
 
 # database creation
 BASE_DIR = os.getcwd()
@@ -50,9 +51,9 @@ class SubmissionSchema(ma.SQLAlchemyAutoSchema):
 with app.app_context():
     if submission.query.count() == 0:
         submission_Sl_lab_1 = [
-            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0828', SeatNo='1', Lab='1' ,Submitted=True),
-            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0829', SeatNo='2', Lab='1' ,Submitted=True),
-            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0830', SeatNo='3', Lab='1' ,Submitted=False),
+            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0828', SeatNo='1', Lab='sl1' ,Submitted=True),
+            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0829', SeatNo='2', Lab='sl1' ,Submitted=True),
+            submission(Subject='software_lab', CourseCode='cs699', TestNo=1, StudentID='25m0830', SeatNo='3', Lab='sl1' ,Submitted=False),
         ]
         db.session.add_all(submission_Sl_lab_1)
         db.session.commit()
@@ -188,19 +189,63 @@ def ta_direct_submit():
     data = request.form
     app.logger.debug(f"Received form data: {data}")
 
-    with open("bash_scripts/better_submit.sh", "r") as file:
-        lines = file.readlines()
-    
-    with open("bash_scripts/sending_submit.sh", "w") as file:
-        file.write("#!/bin/bash\n")
-        file.write("SESSION=sysad\n")
-        file.write("COURSE_CODE=" + data['CourseCode'] + "\n")
-        file.write("TEST_NO=" + data['TestNo'] + "\n")
-        # file.write("SUBJECT=" + data['Subject'] + "\n") #already in db
-        for line in lines:
-            file.write(line)
+    submissions_list = submission.query.filter_by(TestNo=data.get('TestNo'), CourseCode=data.get('CourseCode')).all()
+    submissions_list = multi_submission_schema.dump(submissions_list)
+    app.logger.debug(f"Query result: {submissions_list}")
 
-    return "TA Direct Submission Script Updated and Ready to Use", 200
+    results = []
+
+    for student in submissions_list:
+        app.logger.debug(f"echo 'Submitting for StudentID: {student}'\n")
+
+        with open("bash_scripts/better_submit.sh", "r") as file:
+            lines = file.readlines()
+        
+        with open("bash_scripts/better_check.sh", "r") as file:
+            check_lines = file.readlines()
+
+        with open("bash_scripts/sending_submit.sh", "w") as file:
+            file.write("#!/bin/bash\n")
+            # file.write(f"check submission_{student['StudentID']}\n")
+            file.write(f"DIR=\"/home/sysad/Desktop/submission_{student['StudentID']}\"\n") 
+            file.write("SESSION=sysad\n")
+            file.write("COURSE_CODE=" + data['CourseCode'] + "\n")
+            file.write("TEST_NO=" + data['TestNo'] + "\n")
+            file.write("ROLLNO=" + student['StudentID'] + "\n")
+            file.write(f"FILENAME=/home/sysad/Desktop/{student['Lab']}-{student['SeatNo']}_submission_{student['StudentID']}.tar.gz\n")
+
+            for line in check_lines:
+                file.write(line)
+
+            # file.write("SUBJECT=" + data['Subject'] + "\n") #already in db
+
+            for line in lines:
+                file.write(line)
+
+        if student['Lab'] == "sl1":
+            student_ip = "10.130.153." + student['SeatNo']
+        elif student['Lab'] == "sl2":
+            student_ip = "10.130.154." + student['SeatNo']
+        elif student['Lab'] == "sl3":
+            student_ip = "10.130.155." + student['SeatNo']
+        else:
+            app.logger.error(f"Invalid Lab for StudentID: {student}")
+            return f"Invalid Lab for StudentID: {student['StudentID']}", 400
+        
+
+        with open("bash_scripts/file_sending_script.sh", "w") as file:
+            file.write("#!/bin/bash\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
+
+        result = subprocess.run(['/home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/file_sending_script.sh'], check=True, capture_output=True, text=True)
+
+        results.append(result.stdout)
+        app.logger.debug(f"Submission script sent to {student_ip} for StudentID: {student['StudentID']}")
+        app.logger.debug(f"Submission script output: {result.stdout}")
+
+    return f"TA Direct Submission Script Updated and Ready to Use {results}", 200
 
 # ===== RUN THE APP =====
 if __name__ == '__main__':
