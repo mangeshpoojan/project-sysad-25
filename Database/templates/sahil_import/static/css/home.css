@@ -1,0 +1,99 @@
+/* --- General Page Styling --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9f9f9;
+    padding: 30px 15px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+h1 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+h3 {
+    color: #777;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 40px;
+}
+
+/* --- Service Container Wrapper (Simplified Flexbox) --- */
+/* Target the div that wraps all service_container cards */
+body > div {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    /* Centers items horizontally, which helps center the last item when it's alone */
+    justify-content: center; 
+    gap: 20px;
+    max-width: 1300px; /* Increased max-width of container to ensure two 30vw cards fit */
+    margin: 0 auto;
+}
+
+/* --- Individual Service Container Styling --- */
+.service_container { /* TARGETING NEW CLASS NAME */
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ededed;
+
+    /* APPLYING USER'S REQUESTED VIEWPORT DIMENSIONS (30vw x 20vh) */
+    width: 30vw; 
+    height: 20vh;
+    max-width: 30vw; 
+    min-width: 280px; /* Added minimum width to prevent collapse on small screens */
+    min-height: 100px; /* Adjusted minimum height */
+}
+
+.service_container:hover { /* TARGETING NEW CLASS NAME */
+    /* Using a simple box-shadow for hover feedback. */
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+    border-color: #0070c0; /* Subtle color change on hover */
+}
+
+/* --- Clickable Link Styling (Internal Flexbox) --- */
+.service_container a { /* TARGETING NEW CLASS NAME (Context) */
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    padding: 20px; /* Adjusted padding to fit the new 20vh height */
+    align-items: center; /* Vertically centers the icon and detail */
+    text-align: left;
+    height: 100%; /* Ensure link takes up full height */
+    box-sizing: border-box; /* Include padding in height calculation */
+}
+
+/* --- Icon Area Styling --- */
+.service_icon { /* TARGETING NEW CLASS NAME */
+    flex-shrink: 0;
+    width: 80px; 
+    height: 80px; 
+    margin-right: 25px; 
+}
+
+.service_icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* --- Detail Area Styling (H2 and H4) --- */
+.service_detail { /* TARGETING NEW CLASS NAME */
+    flex-grow: 1;
+}
+
+.service_detail h2 { /* TARGETING NEW CLASS NAME (Context) */
+    font-size: 1.4rem; /* Adjusted font size for larger cards */
+    color: #0070c0;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+.service_detail h4 { /* TARGETING NEW CLASS NAME (Context) */
+    font-size: 1.1rem; /* Adjusted font size for larger cards */
+    color: #888;
+    margin: 0;
+    font-weight: 400;
+}

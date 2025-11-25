@@ -1,0 +1,42 @@
+
+<div class="container">
+    <h2>Select Course Code</h2>
+
+    {% for course in course_codes %}
+
+        {% if selected_course_code == course[0] %}
+        <div class ="sub-container-2 selected">
+            <!-- if course_code is selected -->
+            <a href="{{ url_for('check_lab_submissions') }}?course_code={{ course[0] }}">{{ course[0] }}</a>
+        </div>
+        {% endif %}
+
+        {% if selected_course_code != course[0] %}
+        <div class ="sub-container-2">
+            <!-- if course_code is not selected -->
+            <a href="{{ url_for('check_lab_submissions') }}?course_code={{ course[0] }}">{{ course[0] }}</a>
+        </div>
+        {% endif %}
+
+    {% endfor %}
+
+</div>
+
+<div class="container">
+
+{% if test_numbers %}
+    <h2>Select Test Number</h2>
+    {% for test in test_numbers %}
+        {% if selected_test_no == test[0] %}
+            <div class ="sub-container-2 selected">
+                <a href="{{ url_for('check_lab_submissions') }}?course_code={{ selected_course_code }}&test_no={{ test[0] }}">{{ test[0] }}</a>
+            </div>
+        {% else %}
+            <div class ="sub-container-2">
+                <a href="{{ url_for('check_lab_submissions') }}?course_code={{ selected_course_code }}&test_no={{ test[0] }}">{{ test[0] }}</a>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+</div>

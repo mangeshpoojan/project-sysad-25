@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TA Direct Submit</title>
+    <title>Submission_status</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
 </head>
+<style>
+</style>
 <body>
     {% include 'header.html' %}
-    <h1>TA Direct Submit</h1>
+
+    <h1>Submissions Page</h1>
 
     {% include 'Course.html' %}
     
+    {% include 'submissions.html' %}
 </body>
 </html>

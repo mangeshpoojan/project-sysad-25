@@ -72,19 +72,43 @@ with app.app_context():
     result = multi_submission_schema.dump(all_submissions)
     print("All Submissions in Database:")
     print(result)
-
+ 
     single_result = submission.query.first()
     single_result_serialized = single_submission_schema.dump(single_result)
     print("Single Submission:")
     print(single_result_serialized)
 
-# ===== Serving webpage =====
-@app.route('/submissions', methods=['GET'])
-def webpage_submissions():
-    return render_template('home.html')
+@app.route('/submit_module', methods=['GET'])
+def submit_module():
+    return render_template('submit_module.html')
 
-@app.route('/submissions/submit' , methods=['POST'])
-def submissions_for_lab():
+# ===== Serving webpage =====
+@app.route('/check_lab_submissions', methods=['GET'])
+def check_lab_submissions():
+    # find all course codes
+    course_codes = db.session.query(submission.CourseCode).distinct().all()
+
+    #if selected TestNo in get ?course_code=cs699&test_no=1
+    test_no = request.args.get('test_no')
+    course_code = request.args.get('course_code')
+    if test_no and course_code:
+        #find the submissions for that test no and course code
+        test_numbers = db.session.query(submission.TestNo).filter_by(CourseCode=course_code).distinct().all()
+        submissions = db.session.query(submission).filter_by(TestNo=test_no, CourseCode=course_code).all()
+        return render_template('Submission_status_page.html', course_codes=course_codes , test_numbers=test_numbers, submissions=submissions, selected_course_code=course_code, selected_test_no=test_no)
+
+    #if contain value in get ?course_code=cs699
+    course_code = request.args.get('course_code')
+    if course_code:
+        # get all test numbers for that course code
+        test_numbers = db.session.query(submission.TestNo).filter_by(CourseCode=course_code).distinct().all()
+        return render_template('Submission_status_page.html', course_codes=course_codes , test_numbers=test_numbers, selected_course_code=course_code)
+
+    return render_template('Submission_status_page.html', course_codes=course_codes ,)
+
+#not in use
+# @app.route('/check_lab_submissions_result' , methods=['POST'])
+# def check_lab_submissions_result():
     data = request.form
     app.logger.debug(f"Received form data: {data}")
     app.logger.debug(f"TestNo: {data.get('TestNo')}, CourseCode: {data.get('CourseCode')}")
@@ -98,7 +122,7 @@ def submissions_for_lab():
     result = [student for student in result if student['Submitted']]
     return render_template('submissions.html', submitted_data=result , not_submitted_data=not_submitted_data)
 
-
+# not using anymore
 @app.route('/student/submit',methods=['POST'])
 def submission_student():
     data = request.form
@@ -178,13 +202,32 @@ def add_student_submission():
 
     return "Student already exists", 400
 
-@app.route('/add_student')
+@app.route('/add_student_page')
 def add_student_page():
     return render_template('add_student.html')
 
 @app.route('/ta_direct_submit_page')
 def ta_direct_submit_page():
-    return render_template('ta_direct_submit.html')
+    # find all course codes
+    course_codes = db.session.query(submission.CourseCode).distinct().all()
+
+    #if selected TestNo in get ?course_code=cs699&test_no=1
+    test_no = request.args.get('test_no')
+    course_code = request.args.get('course_code')
+    if test_no and course_code:
+        #find the submissions for that test no and course code
+        test_numbers = db.session.query(submission.TestNo).filter_by(CourseCode=course_code).distinct().all()
+        submissions = db.session.query(submission).filter_by(TestNo=test_no, CourseCode=course_code).all()
+        return render_template('ta_direct_submit.html', course_codes=course_codes , test_numbers=test_numbers, submissions=submissions, selected_course_code=course_code, selected_test_no=test_no)
+    
+    #if contain value in get ?course_code=cs699
+    course_code = request.args.get('course_code')
+    if course_code:
+        # get all test numbers for that course code
+        test_numbers = db.session.query(submission.TestNo).filter_by(CourseCode=course_code).distinct().all()
+        return render_template('ta_direct_submit.html', course_codes=course_codes , test_numbers=test_numbers, selected_course_code=course_code)
+
+    return render_template('ta_direct_submit.html', course_codes=course_codes)
 
 @app.route('/ta_direct_submit_page/submit',methods=['POST'])
 def ta_direct_submit():
@@ -269,4 +312,4 @@ def ta_direct_submit():
 
 # ===== RUN THE APP =====
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit_Module</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <h1>Submit Module Page</h1>
+
+    <div class="container">
+        
+        <div class="sub-container">
+            <a href="{{url_for('check_lab_submissions')}}">Check Lab Submissions</a>
+        </div>
+
+        <div class="sub-container">
+            <a href="{{url_for('add_student_page')}}">Add Student Submission</a>
+        </div>
+
+        <div class="sub-container">
+            <a href="{{url_for('check_lab_submissions')}}">Check Lab Submissions</a>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -59,6 +59,7 @@ def register():
 
 @app.route("/home")
 def home():
+    #check if user is logged in
     if "user" not in session:
         return redirect(url_for("login"))
     return render_template("home.html")

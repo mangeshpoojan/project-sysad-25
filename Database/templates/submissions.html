@@ -1,14 +1,15 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
+<body> -->
+<div class="container">
     <h1>Submissions Page</h1>
     <h2 style="color:green;">Submission Successful</h3>
-    {% for student in submitted_data %}
+    {% for student in submissions %}
         {% if student.Submitted == True %} 
             <div style="border:1px solid black; padding:10px; margin:10px;background-color:lightgreen;">
                 <h5>{{student.StudentID}}</h5>
@@ -25,7 +26,8 @@
     {% endfor %}
     
     <h2>Students Yet to Submit</h2>
-    {% for student in not_submitted_data %}
+    {% for student in submissions %}
+        {% if student.Submitted == False %}
         <div style="border:1px solid black; padding:10px; margin:10px;background-color:lightcoral;">
             <h5>{{student.StudentID}}</h5>
             <p>Course Code: {{student.CourseCode}}</p>
@@ -35,7 +37,10 @@
             <p>Seat No: {{student.SeatNo}}</p>
             <p>Submitted: {{student.Submitted}}</p>
         </div>
+        {% endif %}
     {% endfor %}
     <a href="/submissions">View All Submissions</a>
-</body>
-</html>
+
+</div>
+<!-- </body>
+</html> -->

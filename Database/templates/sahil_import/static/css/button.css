@@ -1,0 +1,49 @@
+/* --- 1. HEADER CONTAINER (.button-container) --- */
+.button-container {
+    
+    width: 100vw;
+    height: 15vh;
+    
+    /* Layout: Uses Flexbox to align buttons */
+    display: flex;
+    align-items: center; /* Vertically centers the buttons */
+    justify-content: flex-end; /* Aligns buttons to the right */
+    gap: 15px; /* Adds space between the buttons */
+    padding-right: 20px; /* Space the buttons from the right edge */
+    
+    /* Appearance (White simple theme) */
+    background-color: #ffffff; /* White background */
+    border-bottom: 3px solid #ccc; /* Light gray border for separation */
+    z-index: 1000; Ensures the header is on top of content (FIXED)
+    box-sizing: border-box; /* Include padding in the element's total width/height */
+}
+
+/* --- 2. BUTTON STYLING (.button) --- */
+.button {
+    /* The container now controls layout */
+    display: inline-block;
+    padding: 8px 15px; 
+    
+    /* Appearance adjusted for white theme */
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e40af; /* Dark blue text for contrast */
+    background-color: #e6f7ff; /* Very light blue/gray background */
+    border: 1px solid #1e40af;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none; /* Remove underline from links */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #cce0e6; /* Slightly darker hover */
+}
+
+/* --- 3. BODY OFFSET (CRUCIAL FIX) --- */
+body {
+    /* Re-adding padding-top to ensure content starts below the fixed header (FIXED) */
+    padding-top: 15vh; 
+    margin: 0; /* Remove default body margin */
+}

@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
 </head>
 <body>
+    {% include 'header.html' %}
     <h1>Add Student</h1>
-    <form action="/add_student/submit" method="POST">
+    <div class="container">
+    <form class="add-student-form" action="/add_student/submit" method="POST">
         <label for="StudentID">Student ID:
             <input type="text" name="StudentID" required>
         </label>
@@ -34,5 +37,6 @@
         <br>
         <button type="submit">Submit</button>
     </form>
+    </div>
 </body>
 </html>
