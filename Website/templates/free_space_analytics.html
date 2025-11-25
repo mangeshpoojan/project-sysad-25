@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}free space analytics{% endblock %}</title>
+       
+    {% block head_css %}
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .analytics-header {
+            /* Dimension & Layout */
+            height: 10vh;
+            /* 10% of screen height */
+            width: 100%;
+            display: flex;
+            align-items: center;
+            /* Vertically Center */
+            justify-content: center;
+            /* Horizontally Center (or use space-evenly) */
+            gap: 40px;
+            /* Space between links */
+
+            /* Visuals */
+            background-color: #1e40af;
+            /* Your theme Blue */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+            box-sizing: border-box;
+            padding: 0 20px;
+        }
+
+        /* 2. The Links */
+        .analytics-header a {
+            text-decoration: none;
+            color: #ffffff;
+            /* White text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            /* Smooth animation */
+            white-space: nowrap;
+            /* Prevents text breaking on small screens */
+        }
+
+        /* 3. Hover Effect */
+        .analytics-header a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            /* Semi-transparent white */
+            transform: translateY(-2px);
+            /* Slight lift effect */
+        }
+
+        /* 4. Active/Current Page Effect (Optional class) */
+        .analytics-header a.active {
+            background-color: white;
+            color: #1e40af;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .analytics-header {
+                height: auto;
+                /* Allow growth on mobile */
+                min-height: 10vh;
+                flex-wrap: wrap;
+                /* Allow wrapping */
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .analytics-header a {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+    {% endblock %}
+   
+</head>
+
+<body>
+    {% include 'home_button.html' %}
+    <div class="analytics-header">
+        <a href="/free_space_analytics" class="active">Free Space Analytics</a>
+        <a href="/system_on_analytics">System On Time</a>
+        <a href="#">Network Usage</a>
+        <a href="#">Exam Stats</a>
+    </div>
+    <div class="main-content" style="padding: 0;">
+    {% block content %}
+    <h1 style="text-align:center; padding-top:20px;">Free Space Analytics Report</h1>
+    
+    <img src="{{url_for('static',filename='images/free_space_graph.png')}}?v={{ timestamp }}" 
+         alt="Graph" 
+         style="display: block; margin: 0 auto; max-width: 80%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
+
+     <img src="{{url_for('static',filename='images/free_space_percentage_graph.png')}}?v={{ timestamp }}" 
+         alt="Graph" 
+         style="display: block; margin: 0 auto; max-width: 80%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
+
+     <img src="{{url_for('static',filename='images/lab_space_pie_chart.png')}}?v={{ timestamp }}" 
+         alt="Graph" 
+         style="display: block; margin: 0 auto; max-width: 80%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
+         
+    {% endblock %}
+</div>
+
+</body>
+
+</html>
