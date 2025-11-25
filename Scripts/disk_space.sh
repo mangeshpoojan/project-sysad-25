@@ -1,6 +1,6 @@
 #!/bin/bash
 
-password="$(cat shadow)"
+password="$(cat .shadow)"
 
 #OUTFILE="disk_space_$(date +%F_%H%M%S).txt"
 OUTFILE="disk_space.txt"
