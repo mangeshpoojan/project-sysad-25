@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
 </head>
 <body>
+    <main>
     {% include 'header.html' %}
+
     <h1>Add Student</h1>
     <div class="container">
     <form class="add-student-form" action="/add_student/submit" method="POST">
@@ -38,5 +40,10 @@
         <button type="submit">Submit</button>
     </form>
     </div>
+    </main>
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+    
 </body>
 </html>

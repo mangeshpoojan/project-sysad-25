@@ -214,11 +214,18 @@ def ta_direct_submit_page():
     #if selected TestNo in get ?course_code=cs699&test_no=1
     test_no = request.args.get('test_no')
     course_code = request.args.get('course_code')
+
+    app.logger.debug(f"TA Direct Submit Page - test_no: {test_no}, course_code: {course_code}")
+
     if test_no and course_code:
+        app.logger.debug(f"TA Direct Submit Page - test_no: {test_no}, course_code: {course_code}")
         #find the submissions for that test no and course code
         test_numbers = db.session.query(submission.TestNo).filter_by(CourseCode=course_code).distinct().all()
-        submissions = db.session.query(submission).filter_by(TestNo=test_no, CourseCode=course_code).all()
-        return render_template('ta_direct_submit.html', course_codes=course_codes , test_numbers=test_numbers, submissions=submissions, selected_course_code=course_code, selected_test_no=test_no)
+        # submissions = db.session.query(submission).filter_by(TestNo=test_no, CourseCode=course_code).all()
+
+        # app.logger.debug(f"TA Direct Submit Page - test_numbers: {test_numbers}, submissions: {submissions}")
+
+        return render_template('ta_direct_submit.html', course_codes=course_codes , test_numbers=test_numbers,selected_course_code=course_code, selected_test_no=test_no)
     
     #if contain value in get ?course_code=cs699
     course_code = request.args.get('course_code')
@@ -239,7 +246,7 @@ def ta_direct_submit():
     app.logger.debug(f"Query result: {submissions_list_dumped}")
 
     results = []
-
+    result = ""
     for student in submissions_list_dumped:
         app.logger.debug(f"echo 'Submitting for StudentID: {student}'\n")
 
@@ -280,35 +287,41 @@ def ta_direct_submit():
 
         with open("bash_scripts/file_sending_script.sh", "w") as file:
             file.write("#!/bin/bash\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
-
-        result = subprocess.run(['/home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/file_sending_script.sh'], check=True, capture_output=True, text=True)
-
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ConnectTimeout=10 sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ConnectTimeout=10 sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
+        try:
+            result = subprocess.run(['/home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/file_sending_script.sh'], check=True, capture_output=True, text=True)
         
 
-        if "successfully submitted" in result.stdout:
-            app.logger.info(f"Submission successful for StudentID: {student['StudentID']}")
-            #update db
-            existing_data = submission.query.filter_by(StudentID=student['StudentID'], CourseCode=data.get('CourseCode'), TestNo=data.get('TestNo')).first()
-            if existing_data:
-                existing_data.Submitted = True
-                existing_data.TimeStamp = datetime.now(ZoneInfo('Asia/Kolkata'))
-                db.session.commit()
-                app.logger.debug(f"Database updated for StudentID: {student['StudentID']}")
-        else:
-            app.logger.debug(f"unsuccessful{student}")
-            app.logger.debug(f"{type(result.stdout)}---{result.stdout.find("successfully submitted")}")
+            if "successfully submitted" in result.stdout:
+                app.logger.info(f"Submission successful for StudentID: {student['StudentID']}")
+                #update db
+                existing_data = submission.query.filter_by(StudentID=student['StudentID'], CourseCode=data.get('CourseCode'), TestNo=data.get('TestNo')).first()
+                if existing_data:
+                    existing_data.Submitted = True
+                    existing_data.TimeStamp = datetime.now(ZoneInfo('Asia/Kolkata'))
+                    db.session.commit()
+                    app.logger.debug(f"Database updated for StudentID: {student['StudentID']}")
+            else:
+                app.logger.debug(f"unsuccessful{student}")
+                app.logger.debug(f"{type(result.stdout)}---{result.stdout.find("successfully submitted")}")
 
  
-        results.append(result.stdout)
-        app.logger.debug(f"Submission script sent to {student_ip} for StudentID: {student['StudentID']}")
-        app.logger.debug(f"Submission script output: {result.stdout} ")
+            results.append(result.stdout)
+            app.logger.debug(f"Submission script sent to {student_ip} for StudentID: {student['StudentID']}")
+            app.logger.debug(f"Submission script output: {result.stdout} ")
+        
+        except subprocess.CalledProcessError as e:
+            app.logger.debug(f"Command failed with error: {e}")
 
-    return redirect(url_for('webpage_submissions'))
+    return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
  
     return f"TA Direct Submission Script Updated and Ready to Use {results}", 200
+
+
+#single person submit
+
 
 # ===== RUN THE APP =====
 if __name__ == '__main__':
