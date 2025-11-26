@@ -344,6 +344,42 @@ def free_space_analytics():
         sorted_uptime_rows=sorted_uptime_rows,
     )
 
+@app.route("/free_space_visulization", methods=["GET", "POST"])
+def free_space_visulization():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
+    if request.method == "POST":
+        lab = request.form.get("lab", "").strip()
+        machine_number = request.form.get("machine", "").strip()
+        print("Lab:", lab)
+        print("Machine Number:", machine_number)
+        
+        query = """
+        SELECT *
+        FROM machine_storage_log
+        WHERE lab = %s AND machine_number = %s
+        ORDER BY record_time DESC
+        LIMIT 100;
+        """
+        cursor.execute(query, (lab, machine_number))
+        data_list = cursor.fetchall()
+        print("Data List:", data_list)
+        chart_rel_path = logic.generate_per_machine_free_space_chart(data_list, app.static_folder, lab, machine_number)
+        return render_template(
+            "free_space_visulization.html",
+            timestamp=int(time.time()),
+            selected_lab=lab,
+            machine_number=machine_number,
+            chart_image=chart_rel_path,
+            free_space_rows=data_list,
+        )
+
+    return render_template(
+        "free_space_visulization.html",
+        timestamp=int(time.time())
+    )
+
 
 @app.route("/logout")
 def logout():
