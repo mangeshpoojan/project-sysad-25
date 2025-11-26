@@ -346,7 +346,7 @@ def ta_direct_submit():
                     app.logger.debug(f"Database updated for StudentID: {student['StudentID']}")
             else:
                 app.logger.debug(f"unsuccessful{student}")
-                app.logger.debug(f"{type(result.stdout)}---{result.stdout.find("successfully submitted")}")
+                app.logger.debug(f'''{type(result.stdout)}---{result.stdout.find("successfully submitted")}''')
 
  
             results.append(result.stdout)
@@ -390,4 +390,4 @@ def update_student_info_page():
 
 # ===== RUN THE APP =====
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(host="0.0.0.0", debug=True, port=5001)
