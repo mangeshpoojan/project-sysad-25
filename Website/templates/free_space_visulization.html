@@ -85,49 +85,43 @@
 {% endblock %}
 
 {% block content %}
-    
-    <h2 style="text-align:center; padding-top:20px;">System Uptime Report</h2>
-    <img src="{{ url_for('static', filename='images/uptime_hist.png') }}?v={{ timestamp }}"
-         alt="Uptime Histogram"
-         style="display: block; margin: 0 auto; max-width: 80%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
+        <div class="card" style="background:#fff; padding:24px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); width:360px;">
+            <h1 style="margin:0 0 8px; font-size:22px; color:#0f172a;">Per-Machine Visualisation</h1>
+            <p style="margin:0 0 16px; color:#475569;">Select a lab and enter one machine number to view details.</p>
+            <form method="POST" action="{{ url_for('free_space_visulization') }}" style="display:flex; flex-direction:column; gap:12px;">
+                <label for="lab" style="font-weight:600; color:#1e293b;">Lab</label>
+                <select id="lab" name="lab" required style="padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+                    <option value="sl1">sl1</option>
+                    <option value="sl2">sl2</option>
+                    <option value="sl3">sl3</option>
+                    <option value="cs101">cs101</option>
+                </select>
 
-    {% set colors = ["#22c55e", "#65a30d", "#eab308", "#f59e0b", "#f97316", "#dc2626"] %}
-    <div style="max-width: 90%; margin: 30px auto;">
-        <table style="width:100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-            <thead>
-                <tr style="background: #f3f4f6; color: #111827;">
-                    <td style="padding: 10px; border-bottom: 2px solid #e5e7eb;">Lab</td>
-                    <td style="padding: 10px; border-bottom: 2px solid #e5e7eb;">Computer Number</td>
-                    <td style="padding: 10px; border-bottom: 2px solid #e5e7eb;">Weeks</td>
-                    <td style="padding: 10px; border-bottom: 2px solid #e5e7eb;">Days</td>
-                    <td style="padding: 10px; border-bottom: 2px solid #e5e7eb;">Hours</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in sorted_uptime_rows %}
-                    {% set weeks = row[2] %}
-                    {% if weeks < 5 %}
-                        {% set row_color = colors[0] %}
-                    {% elif weeks < 10 %}
-                        {% set row_color = colors[1] %}
-                    {% elif weeks < 15 %}
-                        {% set row_color = colors[2] %}
-                    {% elif weeks < 20 %}
-                        {% set row_color = colors[3] %}
-                    {% elif weeks < 25 %}
-                        {% set row_color = colors[4] %}
-                    {% else %}
-                        {% set row_color = colors[5] %}
-                    {% endif %}
-                <tr style="background-color: {{ row_color }}20; color: #0f172a;">
-                    <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{{ row[0] }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{{ row[1] }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{{ row[2] }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{{ row[3] }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">{{ row[4] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                <label for="machine" style="font-weight:600; color:#1e293b;">Machine number</label>
+                <input id="machine" name="machine" type="number" min="1" placeholder="e.g. 12" required
+                       style="padding:10px; border:1px solid #cbd5e1; border-radius:6px;">
+
+                <button type="submit" style="margin-top:8px; padding:12px; background:#1e40af; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:700;">
+                    Send Request
+                </button>
+            </form>
+
+            {% if selected_lab and machine_number %}
+            <div class="result" style="margin-top:16px; padding:12px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:8px; color:#0f172a;">
+                Lab: <strong>{{ selected_lab }}</strong><br>
+                Machine: <strong>{{ machine_number }}</strong>
+            </div>
+            {% endif %}
+        </div>
     </div>
+
+    {% if chart_image %}
+    <div style="max-width: 90%; margin: 30px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+        <h2 style="margin:0 0 12px; color:#0f172a;">Free Space Trend</h2>
+        <p style="margin:0 0 16px; color:#475569;">Recent free space for {{ selected_lab }}-{{ machine_number }} (latest 100 records).</p>
+        <img src="{{ url_for('static', filename=chart_image) }}?v={{ timestamp }}" alt="Free space line chart"
+             style="width:100%; max-height:520px; object-fit:contain; border:1px solid #e2e8f0; border-radius:8px;">
+    </div>
+    {% endif %}
 {% endblock %}

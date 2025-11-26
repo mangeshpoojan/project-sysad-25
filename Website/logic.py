@@ -189,4 +189,38 @@ def generate_disk_space_pie_chart(cursor,static_folder_path):
     image_path = os.path.join(images_dir, filename)
     plt.savefig(image_path, bbox_inches='tight')
     plt.close()
-    
+
+def generate_per_machine_free_space_chart(data_list, static_folder_path, lab, machine_number):
+    points = []
+    for row in data_list:
+        try:
+            timestamp = row[8]
+            available_gb = float(row[7])
+            points.append((timestamp, available_gb))
+        except (ValueError, TypeError, IndexError):
+            continue
+
+    if not points:
+        return None
+
+    # Sort chronologically
+    points.sort(key=lambda p: p[0])
+    times, values = zip(*points)
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(times, values, marker='o', color='#1e40af', linewidth=2, markersize=6)
+    plt.fill_between(times, values, color='#1e40af', alpha=0.1)
+    plt.title(f"Free Space Over Time: {lab}-{machine_number}")
+    plt.xlabel("Timestamp")
+    plt.ylabel("Free Space (GB)")
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+
+    images_dir = os.path.join(static_folder_path, 'images')
+    os.makedirs(images_dir, exist_ok=True)
+    filename = f"per_machine_free_space.png"
+    image_path = os.path.join(images_dir, filename)
+    plt.savefig(image_path, bbox_inches='tight')
+    plt.close()
+
+    return os.path.join('images', filename)

@@ -90,14 +90,13 @@
 <body>
     {% include 'home_button.html' %}
     <div class="analytics-header">
-        <a href="/free_space_analytics" class="active">Free Space Analytics</a>
+        <a href="/free_space_analytics" class="active">Free Space Visulization</a>
         <a href="/system_on_analytics">System On Time</a>
-        <a href="#">Network Usage</a>
-        <a href="#">Exam Stats</a>
+        <a href="/free_space_visulization">free space per machine</a>
     </div>
     <div class="main-content" style="padding: 0 0 40px;">
     {% block content %}
-    <h1 style="text-align:center; padding-top:20px;">Free Space Analytics Report</h1>
+    <h1 style="text-align:center; padding-top:20px;">Free Space Visulization Report</h1>
     
     <img src="{{url_for('static',filename='images/free_space_graph.png')}}?v={{ timestamp }}" 
          alt="Graph" 
