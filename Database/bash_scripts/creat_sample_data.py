@@ -18,6 +18,6 @@ for index, row in df.iterrows():
     else:
         app.logger.error(f"Invalid Lab for StudentID: {row['StudentID']}")
 
-    result = subprocess.run(['sshpass' , '-f' , '/home/umang/dank/cs699/Course_project_git/password.txt' ,'ssh' , f'sysad@{student_ip}' , 'mkdir' , '-p' , f'/home/sysad/Desktop/submission_{row['StudentID']}/sample_data'])
+    result = subprocess.run(['sshpass' , '-f' , '/home/umang/dank/cs699/Course_project_git/password.txt' ,'ssh' , '-o' , 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=3' , f'sysad@{student_ip}' , 'mkdir' , '-p' , f'/home/sysad/Desktop/submission_{row['StudentID']}/sample_data'])
     # print(f"Created directory for StudentID: {student_id} at /home/sysad/Desktop/submission_{student_id}/sample_data")
     print(result)
