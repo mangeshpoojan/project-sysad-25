@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/free_space.css')}}">
 
 </head>
-
+<!-- (1, 'sl3', 20, datetime.datetime(2025, 11, 24, 22, 8, 1), '100', '80', '20', '80') -->
 <body>
     {% include 'home_button.html' %}
     <table>
@@ -22,17 +22,14 @@
         </thead>
         <tbody>
             {% for row in free_space %}
-            <tr class="{% if row[4]<=10 %}
+            <tr class=" {% if row[7]|int <= 15 %}
                             red
-                        {% elif row[4]<=20 %} 
+                        {% elif row[7]|int <= 40 %} 
                             orange
                         {% else %}
                             green
-                        {% endif %}"    >
+                        {% endif %}">
                 
-                <td>
-                    {{row[0]}}
-                </td>
                 <td>
                     {{row[1]}}
                 </td>
@@ -48,6 +45,10 @@
                 <td>
                     {{row[5]}}
                 </td>
+                <td>
+                    {{row[6]}}
+                </td>
+                
                
             </tr>
             {% endfor %}

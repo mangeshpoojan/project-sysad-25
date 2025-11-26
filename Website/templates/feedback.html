@@ -4,6 +4,16 @@
 <head>
     <title>feedback form</title>
     <link rel="stylesheet" href="{{url_for('static',filename='css/feedback.css')}}">
+    
+    <script>
+    // This function runs every time the page is displayed
+    window.onpageshow = function(event) {
+        // event.persisted is true if the page was loaded from the "Back-Forward Cache"
+        if (event.persisted) {
+            window.location.reload();
+        }
+    };
+</script>
 </head>
 
 <body>

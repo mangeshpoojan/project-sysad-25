@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable Internet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+        }
+        h1 {
+            margin: 0 0 12px;
+            font-size: 22px;
+            color: #111827;
+            text-align: center;
+        }
+        p {
+            margin: 0 0 20px;
+            color: #4b5563;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #111827;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+        }
+        input {
+            box-sizing: border-box;
+        }
+        .hint {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        button {
+            margin-top: 16px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .result {
+            margin-top: 16px;
+            padding: 12px;
+            background: #ecfdf3;
+            border: 1px solid #bbf7d0;
+            color: #065f46;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Enable Internet</h1>
+        <p>Select a lab and list the machines to enable.</p>
+        <form method="POST" action="{{ url_for('internet_enable') }}">
+            <label for="lab">Lab</label>
+            <select id="lab" name="lab" required>
+                <option value="sl1">sl1</option>
+                <option value="sl2">sl2</option>
+                <option value="sl3">sl3</option>
+                <option value="cs101">cs101</option>
+            </select>
+
+            <label for="machines" style="margin-top:12px;">Machine numbers</label>
+            <input id="machines" name="machines" type="text" placeholder="e.g. 1 2 3 10 15" required>
+
+            <button type="submit">Send Request</button>
+        </form>
+
+        {% if selected_lab %}
+        <div class="result">
+            Lab: <strong>{{ selected_lab }}</strong><br>
+            Machines: {{ machine_numbers|join(", ") if machine_numbers else "None provided" }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

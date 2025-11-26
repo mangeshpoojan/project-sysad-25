@@ -1,0 +1,12 @@
+{% extends "free_space_analytics.html" %}
+
+{% block title %}System On Time{% endblock %}
+
+{% block head_css %}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/system_time.css')}}">
+{% endblock %}
+
+{% block content %}
+    <h2 style="text-align:center; padding-top:20px;">System Uptime Report</h2>
+    <div class="chart-container"></div>
+{% endblock %}
