@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
+</head>
+<body>
+    <main>
+    {% include 'header.html' %}
+
+    <h1>Add Student</h1>
+    <div class="container">
+    <form class="add-student-form" action="/student/submit" method="POST">
+        <label for="StudentID">Student ID:
+            <input type="text" name="StudentID" required value="{{ student.StudentID }}">
+        </label>
+        <br>
+        <label for="CourseCode">Course Code:
+            <input type="text" name="CourseCode" required value="{{ student.CourseCode }}">
+        </label>
+        <br>
+        <label for="Subject">Subject:
+            <input type="text" name="Subject" required value="{{ student.Subject }}">
+        </label>
+        <br>
+        <label for="TestNo">Test No:
+            <input type="number" name="TestNo" required value="{{ student.TestNo }}">
+        </label>
+        <br>
+        <label for="SeatNo">Seat No:
+            <input type="text" name="SeatNo" value="{{ student.SeatNo }}">
+        </label>
+        <br>
+        <label for="Lab">Lab:
+            <input type="text" name="Lab" value="{{ student.Lab }}">
+        </label>
+        <br>
+        <label for="Submitted">Submitted:
+            <input type="checkbox" name="Submitted" {% if student.Submitted %}checked{% endif %} value="True">
+        </label>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+    </main>
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+    
+</body>
+</html>

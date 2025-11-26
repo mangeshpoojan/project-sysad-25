@@ -19,6 +19,18 @@
                         <p>Seat No: {{student.SeatNo}}</p>
                         <p>Submitted: {{student.Submitted}}</p>
                         <p>Timestamp: {{student.TimeStamp}}</p>
+                        <!-- invisible form -->
+                        <form id="removeStudentsForm" action="{{ url_for('submission_student') }}" method="POST">
+                            <input type="hidden" name="TestNo" value="{{ student.TestNo }}">
+                            <input type="hidden" name="CourseCode" value="{{ student.CourseCode }}">
+                            <input type="hidden" name="StudentID" value="{{ student.StudentID}}">
+                            <input type="hidden" name="Lab" value="{{ student.Lab}}">
+                            <input type="hidden" name="Subject" value="{{ student.Subject}}">
+                            <input type="hidden" name="SeatNo" value="{{ student.SeatNo}}">
+                            <input type="hidden" name="Submitted" value="False">
+                        </form>
+                        <!-- post request -->
+                        <button type="submit" form="removeStudentsForm" style="background-color: rgb(200, 44, 44);">Remove Submission</button>
                 </div>
             {% endif %}
         {% endfor %}
@@ -39,6 +51,25 @@
                         <p>Seat No: {{student.SeatNo}}</p>
                         <p>Submitted: {{student.Submitted}}</p>
                         <p>Timestamp: n/a</p>
+                        <div class="container">
+                            <!-- invisible form -->
+                            <form id="submitStudentsForm" action="{{ url_for('ta_direct_submit') }}" method="POST">
+                                <input type="hidden" name="TestNo" value="{{ selected_test_no }}">
+                                <input type="hidden" name="CourseCode" value="{{ selected_course_code }}">
+                                <input type="hidden" name="StudentID" value="{{ student.StudentID}}">
+                            </form>
+                            <!-- post request -->
+                            <button type="submit" form="submitStudentsForm">Submit Files</button>
+
+                            <!-- invisible form -->
+                            <form id="ignoreStudentsForm" action="{{ url_for('ta_direct_ignore') }}" method="POST">
+                                <input type="hidden" name="TestNo" value="{{ selected_test_no }}">
+                                <input type="hidden" name="CourseCode" value="{{ selected_course_code }}">
+                                <input type="hidden" name="StudentID" value="{{ student.StudentID}}">
+                            </form>
+                            <!-- post request -->
+                            <button type="submit" form="ignoreStudentsForm">Ignore Student</button>
+                        </div>
                 </div>
             {% endif %}
         {% endfor %}

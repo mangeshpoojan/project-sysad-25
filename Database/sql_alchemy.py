@@ -107,8 +107,8 @@ def check_lab_submissions():
     return render_template('Submission_status_page.html', course_codes=course_codes ,)
 
 #not in use
-# @app.route('/check_lab_submissions_result' , methods=['POST'])
-# def check_lab_submissions_result():
+@app.route('/check_lab_submissions_result' , methods=['POST'])
+def check_lab_submissions_result():
     data = request.form
     app.logger.debug(f"Received form data: {data}")
     app.logger.debug(f"TestNo: {data.get('TestNo')}, CourseCode: {data.get('CourseCode')}")
@@ -122,7 +122,7 @@ def check_lab_submissions():
     result = [student for student in result if student['Submitted']]
     return render_template('submissions.html', submitted_data=result , not_submitted_data=not_submitted_data)
 
-# not using anymore
+# not using anymore , used in curl and update of info , used in removing student submission
 @app.route('/student/submit',methods=['POST'])
 def submission_student():
     data = request.form
@@ -132,15 +132,28 @@ def submission_student():
         return "Missing StudentID or CourseCode or Lab or Subject or TestNo or SeatNo", 400
 
     if submission.query.filter_by(StudentID=data['StudentID'], CourseCode=data['CourseCode'] , Subject=data['Subject'], TestNo=data['TestNo']).count()==0:
-        new_submission = submission(
-            Subject=data['Subject'],
-            CourseCode=data['CourseCode'],
-            TestNo=data['TestNo'],
-            StudentID=data['StudentID'],
-            SeatNo=data['SeatNo'],
-            Lab=data['Lab'],
-            Submitted=True if data['Submitted'] == 'True' else False
-        )
+        
+        if "Submitted" in data:
+            new_submission = submission(
+                Subject=data['Subject'],
+                CourseCode=data['CourseCode'],
+                TestNo=data['TestNo'],
+                StudentID=data['StudentID'],
+                SeatNo=data['SeatNo'],
+                Lab=data['Lab'],
+                Submitted=True if data['Submitted'] == 'True' else False
+            )
+        else:
+            new_submission = submission(
+                Subject=data['Subject'],
+                CourseCode=data['CourseCode'],
+                TestNo=data['TestNo'],
+                StudentID=data['StudentID'],
+                SeatNo=data['SeatNo'],
+                Lab=data['Lab'],
+                Submitted=False
+            )
+
         submitted_data = db.session.add(new_submission)
         submitted_data = single_submission_schema.dump(new_submission)
         app.logger.debug(f"New submission added: {submitted_data}")
@@ -151,7 +164,10 @@ def submission_student():
     existing_data = submission.query.filter_by(StudentID=data['StudentID'], CourseCode=data['CourseCode'], TestNo=data['TestNo']).first()
     if existing_data:
         existing_data.SeatNo = data['SeatNo']
-        existing_data.Submitted = True if data['Submitted'] == 'True' else False
+        if "Submitted" in data:
+            existing_data.Submitted = True if data['Submitted'] == 'True' else False
+        else:
+            existing_data.Submitted = False
         existing_data.TimeStamp = datetime.now(ZoneInfo('Asia/Kolkata'))
         existing_data.Lab = data['Lab']
         db.session.commit()
@@ -236,17 +252,42 @@ def ta_direct_submit_page():
 
     return render_template('ta_direct_submit.html', course_codes=course_codes)
 
+@app.route('/ta_direct_ignore/submit', methods=['POST'])
+def ta_direct_ignore():
+    data = request.form
+    existing_student = submission.query.filter_by(TestNo=data.get('TestNo'), CourseCode=data.get('CourseCode'), StudentID=data.get('StudentID')).first()
+
+    # update submitted
+    if existing_student:
+        existing_student.Submitted=True
+        existing_student.TimeStamp = datetime.now(ZoneInfo('Asia/Kolkata'))
+        db.session.commit()
+        app.logger.debug(f"Database updated for StudentID: {existing_student}")
+        return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
+    else:
+        return f"No such student{data}"
+
+
 @app.route('/ta_direct_submit_page/submit',methods=['POST'])
 def ta_direct_submit():
     data = request.form
     app.logger.debug(f"Received form data: {data}")
+    single_student=0
+    if 'StudentID' in data:
+        single_student = data['StudentID']
+        app.logger.debug(single_student)
 
-    submissions_list = submission.query.filter_by(TestNo=data.get('TestNo'), CourseCode=data.get('CourseCode')).all()
-    submissions_list_dumped = multi_submission_schema.dump(submissions_list)
-    app.logger.debug(f"Query result: {submissions_list_dumped}")
+    if not single_student:
+        submissions_list = submission.query.filter_by(TestNo=data.get('TestNo'), CourseCode=data.get('CourseCode')).all()
+        submissions_list_dumped = multi_submission_schema.dump(submissions_list)
+        app.logger.debug(f"Query result many: {submissions_list_dumped}")
+    else:
+        submissions_list = submission.query.filter_by(TestNo=data.get('TestNo'), CourseCode=data.get('CourseCode'), StudentID=single_student).all()
+        submissions_list_dumped = multi_submission_schema.dump(submissions_list)
+        app.logger.debug(f"Query result single: {submissions_list_dumped}")
 
     results = []
-    result = ""
+    result = {}
     for student in submissions_list_dumped:
         app.logger.debug(f"echo 'Submitting for StudentID: {student}'\n")
 
@@ -287,9 +328,9 @@ def ta_direct_submit():
 
         with open("bash_scripts/file_sending_script.sh", "w") as file:
             file.write("#!/bin/bash\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ConnectTimeout=10 sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
-            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ConnectTimeout=10 sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" scp -o StrictHostKeyChecking=no -o ConnectTimeout=3 -o UserKnownHostsFile=/dev/null /home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/sending_submit.sh sysad@{student_ip}:/home/sysad/Desktop\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=3 sysad@{student_ip} \'chmod +x /home/sysad/Desktop/sending_submit.sh\'\n")
+            file.write(f"sshpass -f \"/home/umang/dank/cs699/Course_project_git/password.txt\" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 -o UserKnownHostsFile=/dev/null sysad@{student_ip} \'/home/sysad/Desktop/sending_submit.sh\'\n")
         try:
             result = subprocess.run(['/home/umang/dank/cs699/Course_project_git/project-sysad-25/Database/bash_scripts/file_sending_script.sh'], check=True, capture_output=True, text=True)
         
@@ -315,12 +356,36 @@ def ta_direct_submit():
         except subprocess.CalledProcessError as e:
             app.logger.debug(f"Command failed with error: {e}")
 
+    # if not single_student:
     return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
- 
+    
     return f"TA Direct Submission Script Updated and Ready to Use {results}", 200
 
 
-#single person submit
+#update student info new page
+@app.route('/update_student_info_page' , methods=['GET'])
+def update_student_info_page():
+    #of format ?course_code=cs683&test_no=1studentid=25m0001
+    course_code = request.args.get('course_code')
+    test_no = request.args.get('test_no')
+    student_id = request.args.get('studentid')
+    app.logger.debug(f"Update Student Info Page - course_code: {course_code}, test_no: {test_no}, student_id: {student_id}")
+
+    if course_code and test_no and student_id:
+        # find the submission for that student
+        submission_data = submission.query.filter_by(TestNo=test_no, CourseCode=course_code, StudentID=student_id).first()
+        if submission_data:
+            submission_data_serialized = single_submission_schema.dump(submission_data)
+            # return f"Submission data found: {submission_data_serialized}"
+            app.logger.debug(f"Submission data found: {submission_data_serialized}")
+            return render_template('update_student_info.html', student=submission_data_serialized)
+        else:
+            app.logger.debug(f"No submission found for StudentID: {student_id}")
+            return "No submission found for the given StudentID", 404
+
+    return render_template('update_student_info.html')
+
+#single person submit merged with multiple person submit
 
 
 # ===== RUN THE APP =====
