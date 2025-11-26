@@ -51,7 +51,7 @@
                         <p>Seat No: {{student.SeatNo}}</p>
                         <p>Submitted: {{student.Submitted}}</p>
                         <p>Timestamp: n/a</p>
-                        <div class="container">
+                        <div class="container" style="flex-wrap: nowrap;">
                             <!-- invisible form -->
                             <form id="submitStudentsForm" action="{{ url_for('ta_direct_submit') }}" method="POST">
                                 <input type="hidden" name="TestNo" value="{{ selected_test_no }}">
@@ -62,7 +62,7 @@
                             <button type="submit" form="submitStudentsForm">Submit Files</button>
 
                             <!-- invisible form -->
-                            <form id="ignoreStudentsForm" action="{{ url_for('ta_direct_ignore') }}" method="POST">
+                            <form  id="ignoreStudentsForm" action="{{ url_for('ta_direct_ignore') }}" method="POST">
                                 <input type="hidden" name="TestNo" value="{{ selected_test_no }}">
                                 <input type="hidden" name="CourseCode" value="{{ selected_course_code }}">
                                 <input type="hidden" name="StudentID" value="{{ student.StudentID}}">

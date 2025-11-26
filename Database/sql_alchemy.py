@@ -7,6 +7,7 @@ from flask import render_template
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import subprocess
+import pandas as pd
 
 # database creation
 BASE_DIR = os.getcwd()
@@ -387,6 +388,62 @@ def update_student_info_page():
 
 #single person submit merged with multiple person submit
 
+@app.route('/bulk_add_students_page')
+def bulk_add_students_page():
+    return render_template('bulk_add_students.html')
+
+@app.route('/bulk_add_students_page/submit', methods=['POST'])
+def bulk_add_students():
+    data = request.form
+    app.logger.debug(f"Received form data: {data}")
+
+    if 'excel_file' not in request.files:
+        return "No file part", 400
+
+    file = request.files['excel_file']
+    if file.filename == '':
+        return "No selected file", 400
+
+    #excel file processing
+    if file:
+        df = pd.read_excel(file)
+        app.logger.debug(f"Excel file columns: {df.columns.tolist()}")
+        app.logger.debug(f"Excel file data:\n{df}")
+        submitted_students = []
+        for index, row in df.iterrows():
+            student_id = str(row['StudentID']).strip()
+            seat_no = str(row['SeatNo']).strip()
+            lab = str(row['Lab']).strip()
+
+            if submission.query.filter_by(StudentID=student_id, CourseCode=data['CourseCode'] , Subject=data['Subject'], TestNo=data['TestNo']).count()==0:
+                new_submission = submission(
+                    Subject=data['Subject'],
+                    CourseCode=data['CourseCode'],
+                    TestNo=data['TestNo'],
+                    StudentID=student_id,
+                    SeatNo=seat_no,
+                    Lab=lab,
+                    Submitted=False
+                )
+                db.session.add(new_submission)
+                db.session.commit() 
+                new_submission_serialized = single_submission_schema.dump(new_submission)
+                app.logger.debug(f"New student added: {new_submission_serialized}")
+                submitted_students.append(new_submission_serialized)
+            else:
+                app.logger.debug(f"Student already exists: {student_id}")
+                existing_student = submission.query.filter_by(StudentID=student_id, CourseCode=data['CourseCode'] , Subject=data['Subject'], TestNo=data['TestNo']).first()
+                #update existing student info
+                existing_student.SeatNo = seat_no
+                existing_student.Lab = lab
+                db.session.commit()
+                existing_student_serialized = single_submission_schema.dump(existing_student)
+                app.logger.debug(f"Existing student data: {existing_student_serialized}")
+
+        if submitted_students:
+            return f"Students added successfully: {submitted_students}", 201
+
+    return "No new students were added", 400
 
 # ===== RUN THE APP =====
 if __name__ == '__main__':
