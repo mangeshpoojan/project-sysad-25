@@ -274,7 +274,25 @@ def free_space_analytics():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    return render_template("system_on_analytics.html")
+    uptime_query = """
+        SELECT m.lab, m.machine_number, m.weeks, m.days, m.hours
+        FROM machine_uptimes_log m
+        JOIN (
+            SELECT lab, machine_number, MAX(record_time) AS latest_time
+            FROM machine_uptimes_log
+            GROUP BY lab, machine_number
+        ) x
+        ON m.lab = x.lab
+        AND m.machine_number = x.machine_number
+        AND m.record_time = x.latest_time;
+    """
+    cursor.execute(uptime_query)
+    uptime_rows = cursor.fetchall()
+    # print("hellllllllllllllllllll",uptime_rows)
+    logic.generate_uptime_histogram(uptime_rows, app.static_folder)
+
+    current_time = int(time.time())
+    return render_template("system_on_analytics.html", timestamp=current_time)
 
 
 @app.route("/logout")

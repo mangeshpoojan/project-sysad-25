@@ -8,5 +8,7 @@
 
 {% block content %}
     <h2 style="text-align:center; padding-top:20px;">System Uptime Report</h2>
-    <div class="chart-container"></div>
+    <img src="{{ url_for('static', filename='images/uptime_hist.png') }}?v={{ timestamp }}"
+         alt="Uptime Histogram"
+         style="display: block; margin: 0 auto; max-width: 80%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
 {% endblock %}

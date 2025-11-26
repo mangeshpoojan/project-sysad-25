@@ -13,6 +13,7 @@ body {
   background: #f3f4f6; /* light gray */
   color: #111827;
   line-height: 1.4;
+  padding: 140px 0 40px; /* space for fixed header + gap */
 }
 
 /* Top navigation */
