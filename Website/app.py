@@ -59,7 +59,7 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        Paraphrase = "0xcoffee"
+        Paraphrase = "0xsahil"
         username = request.form.get("username")
         password = request.form.get("password")
         paraphrase = request.form.get("paraphrase")
