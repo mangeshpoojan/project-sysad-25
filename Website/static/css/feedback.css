@@ -3,7 +3,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5; 
     margin: 0;
-    padding: 0; /* Removed padding here to let header sit at top */
+    padding: 140px 0 40px; /* space for fixed header + gap */
     color: #333;
 }
 
@@ -13,7 +13,7 @@ form {
     /* ALIGNMENT FIX: Match the header's width and centering */
     width: 80vw;             
     max-width: none;         /* Removed the 700px limit */
-    margin: 20px auto;       /* 0 auto centers it. 20px adds space between header and form */
+    margin: 0 auto 20px;     /* top space from body padding */
     
     padding: 40px;
     border-radius: 10px;
@@ -108,6 +108,9 @@ input:focus, textarea:focus {
 .submit {
     text-align: center;
     margin-top: 30px;
+}
+.previous-link {
+    margin-bottom: 30px;
 }
 
 button[type="submit"] {

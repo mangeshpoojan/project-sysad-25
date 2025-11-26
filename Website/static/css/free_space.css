@@ -2,9 +2,8 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
-    /* REMOVED PADDING/JUSTIFY: Centering is now handled by the wrapper/table margin */
-    margin: 0; 
-    padding: 0;
+    margin: 0;
+    padding: 140px 0 40px; /* space for fixed header + gap */
 }
 
 /* --- Basic Table Styling for free_space.html --- */
