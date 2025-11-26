@@ -159,6 +159,7 @@ def submission_student():
         submitted_data = single_submission_schema.dump(new_submission)
         app.logger.debug(f"New submission added: {submitted_data}")
         db.session.commit()
+        return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
         return f"Submission successful {submitted_data}", 201
 
     # update existing submission
@@ -174,12 +175,14 @@ def submission_student():
         db.session.commit()
         existing_data = single_submission_schema.dump(existing_data)
         app.logger.debug(f"Existing submission updated: {existing_data}")
+        return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
         return f"Submission updated {existing_data}", 200
 
     existing_data = single_submission_schema.dump(existing_data)
     app.logger.debug(f"Existing submission found: {existing_data}")
 
     if existing_data:
+        return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
         return f"Submission already exists: {existing_data}", 400
     
     return "Error in submission", 500
@@ -215,8 +218,12 @@ def add_student_submission():
             submitted_students.append(new_submission_serialized)
 
     if submitted_students:
+        app.logger.debug(f"Students added successfully: {submitted_students}")
+        return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
         return f"Students added successfully: {submitted_students}", 201
 
+    app.logger.debug("No new students were added")
+    return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
     return "Student already exists", 400
 
 @app.route('/add_student_page')
@@ -266,6 +273,8 @@ def ta_direct_ignore():
         app.logger.debug(f"Database updated for StudentID: {existing_student}")
         return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
     else:
+        app.logger.debug(f"No such student found: {data}")
+        return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
         return f"No such student{data}"
 
 
@@ -391,7 +400,7 @@ def update_student_info_page():
 @app.route('/bulk_add_students_page')
 def bulk_add_students_page():
     return render_template('bulk_add_students.html')
-
+ 
 @app.route('/bulk_add_students_page/submit', methods=['POST'])
 def bulk_add_students():
     data = request.form
@@ -441,7 +450,8 @@ def bulk_add_students():
                 app.logger.debug(f"Existing student data: {existing_student_serialized}")
 
         if submitted_students:
-            return f"Students added successfully: {submitted_students}", 201
+            return redirect(url_for('check_lab_submissions', course_code=data.get('CourseCode'), test_no=data.get('TestNo')))
+            # return f"Students added successfully: {submitted_students}", 201
 
     return "No new students were added", 400
 
