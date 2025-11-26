@@ -1,6 +1,8 @@
 import time
 
 import mysql.connector
+import os
+import subprocess
 from flask import (
     Flask,
     Response,
@@ -132,6 +134,13 @@ def internet_enable():
                 machine_numbers.append(int(num))
         print("Selected Lab:", selected_lab)
         print("Machine Numbers:", machine_numbers)
+
+        for machine_number in machine_numbers:
+            script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Scripts", "internet_enable.py"))
+            try:
+                subprocess.run(["python3", script_path, selected_lab, str(machine_number)], check=True)
+            except subprocess.CalledProcessError as exc:
+                print(f"Failed to enable internet for {selected_lab}-{machine_number}: {exc}")
 
     return render_template(
         "internet_enable.html",

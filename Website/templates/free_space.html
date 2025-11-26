@@ -9,6 +9,9 @@
 <!-- (1, 'sl3', 20, datetime.datetime(2025, 11, 24, 22, 8, 1), '100', '80', '20', '80') -->
 <body>
     {% include 'home_button.html' %}
+      <img src="{{url_for('static',filename='images/free_space_graph.png')}}?v={{ timestamp }}" 
+         alt="Graph" 
+         style="display: block; margin: 0 auto; max-width: 80%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
     <table>
         <thead>
             <tr>
