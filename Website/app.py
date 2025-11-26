@@ -187,7 +187,8 @@ def check_submit():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    return "check_submit"
+    return redirect("http://10.130.150.6:5001/submit_module")
+
 
 
 @app.route("/feedback")
@@ -307,11 +308,20 @@ def free_space_analytics():
     """
     cursor.execute(uptime_query)
     uptime_rows = cursor.fetchall()
-    # print("hellllllllllllllllllll",uptime_rows)
-    logic.generate_uptime_histogram(uptime_rows, app.static_folder)
+
+    def extract_weeks(row):
+        return row[2] if row[2] is not None else 0
+
+    sorted_uptime_rows = sorted(uptime_rows, key=extract_weeks, reverse=True)
+    # print("hellllllllllllllllllll", sorted_uptime_rows[0])
+    logic.generate_uptime_histogram(sorted_uptime_rows, app.static_folder)
 
     current_time = int(time.time())
-    return render_template("system_on_analytics.html", timestamp=current_time)
+    return render_template(
+        "system_on_analytics.html",
+        timestamp=current_time,
+        sorted_uptime_rows=sorted_uptime_rows,
+    )
 
 
 @app.route("/logout")
