@@ -11,18 +11,28 @@
     {% include 'header.html' %}
     <h1>Submit Module Page</h1>
 
-    <div class="container">
+    <div class="container" style=" display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px;">
         
         <div class="sub-container">
-            <a href="{{url_for('check_lab_submissions')}}">Check Lab Submissions</a>
+            <a href="{{url_for('check_lab_submissions')}}">
+                <img src="{{ url_for('static', filename='/check_pc.png') }}" alt="Check Lab Submissions" style="width: 100%; height: auto;">
+                Check Lab Submissions
+            </a>
         </div>
 
         <div class="sub-container">
-            <a href="{{url_for('add_student_page')}}">Add Student Submission</a>
+
+            <a href="{{url_for('add_student_page')}}">
+                <img src="{{ url_for('static', filename='/save_data.png') }}" alt="Add Student Submission" style="width: 100%; height: auto;">
+                Add Student Submission
+            </a>
         </div>
 
         <div class="sub-container">
-            <a href="{{url_for('check_lab_submissions')}}">Check Lab Submissions</a>
+            <a href="{{url_for('check_lab_submissions')}}">
+                <img src="{{ url_for('static', filename='/save_pc.png') }}" alt="Submit Files" style="width: 100%; height: auto;">
+                Submit Files
+            </a>
         </div>
 
     </div>

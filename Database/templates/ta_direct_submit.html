@@ -5,12 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TA Direct Submit</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='general.css') }}">
+    <!-- <script>
+        function submitStudents() {
+            fetch("/ta_direct_submit_page/submit", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    TestNo: "{{ selected_test_no }}",
+                    CourseCode: "{{ selected_course_code }}"
+                })
+            });
+        }
+    </script> -->
 </head>
 <body>
+    <main>
     {% include 'header.html' %}
+
     <h1>TA Direct Submit</h1>
 
-    {% include 'Course.html' %}
+    <div class="container">
+        <h2>Select Course Code</h2>
+
+        {% for course in course_codes %}
+
+            {% if selected_course_code == course[0] %}
+            <div class ="sub-container-2 selected">
+                <!-- if course_code is selected -->
+                <a href="{{ url_for('ta_direct_submit_page') }}?course_code={{ course[0] }}">{{ course[0] }}</a>
+            </div>
+            {% endif %}
+
+            {% if selected_course_code != course[0] %}
+            <div class ="sub-container-2">
+                <!-- if course_code is not selected -->
+                <a href="{{ url_for('ta_direct_submit_page') }}?course_code={{ course[0] }}">{{ course[0] }}</a>
+            </div>
+            {% endif %}
+
+        {% endfor %}
+
+    </div>
+
+    <div class="container">
+
+        {% if test_numbers %}
+            <h2>Select Test Number</h2>
+            {% for test in test_numbers %}
+                {% if (selected_test_no ~ '') == (test[0] ~ '') %}
+                    <div class ="sub-container-2 selected">
+                        <a href="{{ url_for('ta_direct_submit_page') }}?course_code={{ selected_course_code }}&test_no={{ test[0] }}">{{ test[0] }}</a>
+                    </div>
+                {% else %}
+                    <div class ="sub-container-2">
+                        <a href="{{ url_for('ta_direct_submit_page') }}?course_code={{ selected_course_code }}&test_no={{ test[0] }}">{{ test[0] }}</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
     
+
+
+        
+    </div>
+
+    <div class="container">
+            {% if selected_test_no and selected_course_code %}
+            <!-- invisible form -->
+            <form id="submitStudentsForm" action="{{ url_for('ta_direct_submit') }}" method="POST">
+                <input type="hidden" name="TestNo" value="{{ selected_test_no }}">
+                <input type="hidden" name="CourseCode" value="{{ selected_course_code }}">
+            </form>
+            <!-- post request -->
+            <button type="submit" form="submitStudentsForm">Submit Files</button>
+        {% endif %}
+    </div>
+    </main>
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+
 </body>
 </html>

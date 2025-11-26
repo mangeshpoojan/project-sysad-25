@@ -1,0 +1,61 @@
+<div class="container" 
+         style="
+            width: 100vw; height: 15vh;
+            display: flex; align-items: center; 
+            justify-content: center;
+            gap: 15px; 
+            /* margin: 0 auto;  */
+            background-color: #ffffff;
+            border-bottom: 3px solid #ccc;
+            box-sizing: border-box;
+            padding-right: 20px;
+            /* position at the bottom of page non sticky */
+            /* position: fixed;  */
+            bottom: 0; 
+         ">
+        <a href="{{ url_for('check_lab_submissions') }}" class='button' 
+           style="
+             display: inline-block; 
+             padding: 8px 15px; 
+             font-size: 16px; 
+             font-weight: 700;
+             color: #1e40af; 
+             background-color: #e6f7ff; 
+             border: 1px solid #1e40af; 
+             border-radius: 4px;
+             cursor: pointer; 
+             text-decoration: none; 
+             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+           ">Submission Status</a>
+
+        <a href="{{ url_for('add_student_page') }}" class='button' 
+           style="
+             display: inline-block;
+             padding: 8px 15px; 
+             font-size: 16px; 
+             font-weight: 700;
+             color: #1e40af; 
+             background-color: #e6f7ff; 
+             border: 1px solid #1e40af; 
+             border-radius: 4px;
+             cursor: pointer; 
+             text-decoration: none; 
+             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+           ">Add Student</a>
+
+        <a href="{{ url_for('ta_direct_submit_page') }}" class='button' 
+           style="
+             display: inline-block;
+             padding: 8px 15px; 
+             font-size: 16px; 
+             font-weight: 700;
+             color: #1e40af; 
+             background-color: #e6f7ff; 
+             border: 1px solid #1e40af; 
+             border-radius: 4px;
+             cursor: pointer; 
+             text-decoration: none; 
+             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+           ">Submit Files</a>
+
+    </div>

@@ -1,10 +1,10 @@
 #!/bin/bash
-DIR="/home/sysad/Desktop/submission_25m0831"
+DIR="/home/sysad/Desktop/submission_25m0827"
 SESSION=sysad
 COURSE_CODE=cs699
-TEST_NO=1
-ROLLNO=25m0831
-FILENAME=/home/sysad/Desktop/sl1-4_submission_25m0831.tar.gz
+TEST_NO=5
+ROLLNO=25m0827
+FILENAME=/home/sysad/Desktop/sl1-4_submission_25m0827.tar.gz
 
 if [ -d "$DIR" ]; then
         if [ "$(ls -A $DIR)" ]; then
@@ -45,7 +45,7 @@ then
     echo "Files that will be submitted are:"
     echo "Files                    |  Size (bytes) | Timestamp"
     cat /home/sysad/find_results.txt 
-    sshpass -p "sahilunagar" scp -o StrictHostKeyChecking=no $FILENAME cs683@10.9.100.47:/home/cs683/submissions
+    sshpass -p "sahilunagar" scp -o StrictHostKeyChecking=no -o ConnectTimeout=10 $FILENAME cs683@10.9.100.47:/home/cs683/submissions
     if [ $? -eq 0 ]
     then
       echo "successfully submitted !!"

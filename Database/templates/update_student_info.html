@@ -12,29 +12,33 @@
 
     <h1>Add Student</h1>
     <div class="container">
-    <form class="add-student-form" action="/add_student/submit" method="POST">
+    <form class="add-student-form" action="/student/submit" method="POST">
         <label for="StudentID">Student ID:
-            <input type="text" name="StudentID" required>
+            <input type="text" name="StudentID" required value="{{ student.StudentID }}">
         </label>
         <br>
         <label for="CourseCode">Course Code:
-            <input type="text" name="CourseCode" required>
+            <input type="text" name="CourseCode" required value="{{ student.CourseCode }}">
         </label>
         <br>
         <label for="Subject">Subject:
-            <input type="text" name="Subject" required>
+            <input type="text" name="Subject" required value="{{ student.Subject }}">
         </label>
         <br>
         <label for="TestNo">Test No:
-            <input type="number" name="TestNo" required>
+            <input type="number" name="TestNo" required value="{{ student.TestNo }}">
         </label>
         <br>
         <label for="SeatNo">Seat No:
-            <input type="text" name="SeatNo" >
+            <input type="text" name="SeatNo" value="{{ student.SeatNo }}">
         </label>
         <br>
         <label for="Lab">Lab:
-            <input type="text" name="Lab">
+            <input type="text" name="Lab" value="{{ student.Lab }}">
+        </label>
+        <br>
+        <label for="Submitted">Submitted:
+            <input type="checkbox" name="Submitted" {% if student.Submitted %}checked{% endif %} value="True">
         </label>
         <br>
         <button type="submit">Submit</button>

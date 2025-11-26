@@ -27,7 +27,7 @@
 {% if test_numbers %}
     <h2>Select Test Number</h2>
     {% for test in test_numbers %}
-        {% if selected_test_no == test[0] %}
+        {% if (selected_test_no ~ '') == (test[0] ~ '') %}
             <div class ="sub-container-2 selected">
                 <a href="{{ url_for('check_lab_submissions') }}?course_code={{ selected_course_code }}&test_no={{ test[0] }}">{{ test[0] }}</a>
             </div>
