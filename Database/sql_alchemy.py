@@ -312,6 +312,7 @@ def ta_direct_submit():
             # file.write(f"check submission_{student['StudentID']}\n")
             file.write(f"DIR=\"/home/sysad/Desktop/submission_{student['StudentID']}\"\n") 
             file.write("SESSION=sysad\n")
+            file.write(f"DESTINATION_PATH=/home/cs683/submissions/{data['CourseCode']}/{data['TestNo']}\n")
             file.write("COURSE_CODE=" + data['CourseCode'] + "\n")
             file.write("TEST_NO=" + data['TestNo'] + "\n")
             file.write("ROLLNO=" + student['StudentID'] + "\n")
@@ -335,6 +336,13 @@ def ta_direct_submit():
             app.logger.error(f"Invalid Lab for StudentID: {student}")
             return f"Invalid Lab for StudentID: {student['StudentID']}", 400
         
+        #creating folder structure
+        try:
+            output=subprocess.run(['sshpass', '-p', 'sahilunagar', 'ssh', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null', '-o', 'ConnectTimeout=3', f'cs683@10.9.100.47', f'mkdir -p /home/cs683/submissions/{data["CourseCode"]}/{data["TestNo"]}'], check=True)
+            app.logger.debug(f"Output of directory creation: {output}")
+        except subprocess.CalledProcessError as e:
+            app.logger.debug(f"Directory creation failed with error: {e}")
+            return f"Directory creation failed for StudentID: {student['StudentID']}", 500
 
         with open("bash_scripts/file_sending_script.sh", "w") as file:
             file.write("#!/bin/bash\n")
