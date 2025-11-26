@@ -90,12 +90,28 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/internet_disable")
+@app.route("/internet_disable", methods=["GET", "POST"])
 def internet_disable():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    return "internet_disable"
+    selected_lab = None
+    machine_numbers = []
+
+    if request.method == "POST":
+        selected_lab = request.form.get("lab", "").strip()
+        raw_machines = request.form.get("machines", "").strip()
+
+        machine_numbers = []
+        for num in raw_machines.split():
+            if num.isdigit():
+                machine_numbers.append(int(num))
+
+    return render_template(
+        "internet_disable.html",
+        selected_lab=selected_lab,
+        machine_numbers=machine_numbers,
+    )
 
 
 @app.route("/internet_enable", methods=["GET", "POST"])
