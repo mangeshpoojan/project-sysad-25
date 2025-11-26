@@ -135,10 +135,20 @@ def internet_enable():
         print("Selected Lab:", selected_lab)
         print("Machine Numbers:", machine_numbers)
 
+        base_dir = os.path.dirname(__file__)
+        scripts_dir = os.path.join("..", "Scripts")
+        script_path = os.path.join(scripts_dir, "internet_enable.py")
+
+        print("Executing script:", script_path)
+
         for machine_number in machine_numbers:
-            script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Scripts", "internet_enable.py"))
             try:
-                subprocess.run(["python3", script_path, selected_lab, str(machine_number)], check=True)
+                subprocess.run(
+                    ["python3", script_path, selected_lab, str(machine_number)],
+                    check=True,
+                    cwd=base_dir,
+                )
+                print(f"Successfully enabled internet for {selected_lab}-{machine_number}")
             except subprocess.CalledProcessError as exc:
                 print(f"Failed to enable internet for {selected_lab}-{machine_number}: {exc}")
 
